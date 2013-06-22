@@ -1,13 +1,4 @@
 <?php
-
-/**
- * This sample app is provided to kickstart your experience using Facebook's
- * resources for developers.  This sample app provides examples of several
- * key concepts, including authentication, the Graph API, and FQL (Facebook
- * Query Language). Please visit the docs at 'developers.facebook.com/docs'
- * to learn more about the resources available to you
- */
-
 // Provides access to app specific values such as your app id and app secret.
 // Defined in 'AppInfo.php'
 require_once('AppInfo.php');
@@ -108,59 +99,141 @@ $app_name = idx($app_info, 'name', '');
     <script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
 
     <script type="text/javascript">
-      function logResponse(response) {
-        if (console && console.log) {
-          console.log('The response was', response);
-        }
-      }
+	function logResponse(response) {if (console && console.log)	console.log('The response was', response);}
 
       $(function(){
         // Set up so we handle click on the buttons
         $('#postToWall').click(function() {
           FB.ui(
-            {
-              method : 'feed',
-              link   : $(this).attr('data-url')
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
+            {method : 'feed', link : $(this).attr('data-url')},
+            function (response) 
+				{
+				// If response is null the user canceled the dialog
+				if (response != null) logResponse(response);
+				});});
 
         $('#sendToFriends').click(function() {
           FB.ui(
-            {
-              method : 'send',
-              link   : $(this).attr('data-url')
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
+            { method : 'send', link : $(this).attr('data-url')},
+            function (response) 
+				{
+				// If response is null the user canceled the dialog
+				if (response != null) logResponse(response);
+				});});
 
         $('#sendRequest').click(function() {
           FB.ui(
-            {
-              method  : 'apprequests',
-              message : $(this).attr('data-message')
-            },
-            function (response) {
-              // If response is null the user canceled the dialog
-              if (response != null) {
-                logResponse(response);
-              }
-            }
-          );
-        });
+            {method  : 'apprequests', message : $(this).attr('data-message')},
+            function (response)
+				{
+				// If response is null the user canceled the dialog
+				if (response != null) logResponse(response);
+				});});
+				
+        $('#uploadfbpic').click(function() { uploadphoto2fb();});
       });
+	function resetstuff()
+		{
+		g_fpfile='';
+		$('#yourtextcontent').val('Your thoughts here');
+		$('#preview').html('');
+		}  
+
+	var g_fpfile='';
+	function pickthefilebuddy()
+		{
+		/*
+		filepicker.setKey('A8yWvMi9gSBWGuUXMoKFfz');
+		filepicker.pick(
+			{mimetype: 'image/*'}, 
+			function(fpfile) 
+				{//alert(fpfile.url);
+				filepicker.stat(
+					fpfile, {width: true, height: true}, 
+					function(metadata)
+						{//alert('width:'+ metadata.width +' height:' +metadata.height);
+						if(metadata.width>700) // need to do the conversion part of the image
+							{//if the image is too big to let our brand ad be appropriate on it
+							filepicker.convert(
+								fpfile, {width: 700},
+								function(new_FPFile)
+									{//alert("Converting...image to upload");console.log(new_FPFile.url);
+									$('#preview').html('<img id="pictoload" src="'+new_FPFile.url+'" />');
+									g_fpfile=new_FPFile.url;
+									});
+							}
+						else if(metadata.height>700)
+							{
+							filepicker.convert(
+								fpfile, {height: 700},
+								function(new_FPFile)
+									{//alert("Converting...image to upload");console.log(new_FPFile.url);
+									$('#preview').html('<img id="pictoload" src="'+new_FPFile.url+'" />');
+									g_fpfile=new_FPFile.url;
+									});
+							}
+						else
+							{
+							$('#preview').html('<img id="pictoload" src="'+fpfile.url+'" />');
+							g_fpfile=fpfile.url;
+							}
+						});
+				});
+		*/
+		g_fpfile='https://www.filepicker.io/api/file/xKxc09VlSlKRWa1J9MC9';
+		$('#preview').html('<img id="pictoload" src="'+g_fpfile+'" />');
+		}
+	function uploadphoto2fb()
+		{/*
+		if(g_fpfile=='')	
+			{alert("Please upload or select a pic to continue");	return;}
+		if($('#yourtextcontent').val()=='Your thoughts here' || $('#yourtextcontent').val()=='')	
+			{alert("Please put your thoughts to continue");	return;}
+		var imgURL = g_fpfile;
+		var messagedetail = $('#yourtextcontent').val();//+brandad()
+	    FB.api('/me/photos', 'post', {message:messagedetail, url:imgURL} 
+				, function(response)
+					{
+					if (!response || response.error) {alert('Error occured'+JSON.stringify(response.error));} 
+					else //on success
+						{
+						alert('Post ID: ' + response.id);
+						setprofilepic(response.id);
+						}
+			   });*/
+		setprofilepic(10152025014424778);	   
+		/* use photos instead of feed, url instead of pictures for uploading images to album*/
+		}
+
+		function setprofilepic(photoid)
+			{
+			$.ajax({
+				type: "GET",
+				url: "/services/setprofilepic.php?photoid="+photoid, 
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function(req) 
+					{
+					responseDur = req;//eval('(' + req + ')');
+					if(responseDur!=null)
+						{
+						if( responseDur.errorNumber==1 ) //SUCCESS
+							{
+							alert(" returned from service php"+ responseDur.returned);
+							}
+						else
+							{
+							alert("some service php generated error");
+							}
+						}
+					},
+				error: function(err) 
+					{
+					alert(err.toString());
+					alert('Error:' + err.responseText + '  Status: ' + err.status);
+					}
+				});	
+			}
     </script>
 
     <!--[if IE]>
@@ -205,8 +278,9 @@ $app_name = idx($app_info, 'name', '');
         js.src = "//connect.facebook.net/en_US/all.js";
         fjs.parentNode.insertBefore(js, fjs);
       }(document, 'script', 'facebook-jssdk'));
-    </script>
-
+     // Load file picker io Asynchronously
+	(function(a){if(window.filepicker){return}var b=a.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===a.location.protocol?"https:":"http:")+"//api.filepicker.io/v1/filepicker.js";var c=a.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c);var d={};d._queue=[];var e="pick,pickMultiple,pickAndStore,read,write,writeUrl,export,convert,store,storeUrl,remove,stat,setKey,constructWidget,makeDropPane".split(",");var f=function(a,b){return function(){b.push([a,arguments])}};for(var g=0;g<e.length;g++){d[e[g]]=f(e[g],d._queue)}window.filepicker=d})(document); 
+	</script>
     <header class="clearfix">
       <?php if (isset($basic)) { ?>
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
@@ -214,35 +288,36 @@ $app_name = idx($app_info, 'name', '');
       <div>
         <h1>Welcome, <strong><?php echo he(idx($basic, 'name')); ?></strong></h1>
         <p class="tagline">
-          This is your app
+          This is our app
           <a href="<?php echo he(idx($app_info, 'link'));?>" target="_top"><?php echo he($app_name); ?></a>
         </p>
 
+		
         <div id="share-app">
-          <p>Share your app:</p>
+          <p>Share your app buddy:</p>
           <ul>
-            <li>
-              <a href="#" class="facebook-button" id="postToWall" data-url="<?php echo AppInfo::getUrl(); ?>">
-                <span class="plus">Post to Wall</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="facebook-button speech-bubble" id="sendToFriends" data-url="<?php echo AppInfo::getUrl(); ?>">
-                <span class="speech-bubble">Send Message</span>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="facebook-button apprequests" id="sendRequest" data-message="Test this awesome app">
-                <span class="apprequests">Send Requests</span>
-              </a>
-            </li>
+        
+			<li><a href="#" class="facebook-button" id="postToWall" data-url="<?php echo AppInfo::getUrl(); ?>"><span class="plus">Post to Wall</span></a></li>
+            <li><a href="#" class="facebook-button speech-bubble" id="sendToFriends" data-url="<?php echo AppInfo::getUrl(); ?>"><span class="speech-bubble">Send Message</span></a></li>
+            <li><a href="#" class="facebook-button apprequests" id="sendRequest" data-message="Test this awesome app"><span class="apprequests">Send Requests</span></a></li>
+			<li><a href="#" class="facebook-button apprequests" id="uploadfbpic" data-message="Test this awesome app"><span class="apprequests">Upload picture</span></a></li>
+			
           </ul>
+			<form name="publishForm" action="success.php" onsubmit="return uploadphoto2fb()" method="post">
+				<div id="preview">sdfdsf</div>        
+				<input type="textarea" id="yourtextcontent" value="Your thoughts here"/>
+				<input type="submit" onclick="pickthefilebuddy()" value="Pick your file"/>
+				<input type="submit" onclick="resetstuff()" value="Reset"/>
+				First name: <input type="text" name="fname"><br/>
+				Age: <input type="text" name="age">
+				<input type="submit" value="Publish">
+			</form>
         </div>
       </div>
       <?php } else { ?>
       <div>
         <h1>Welcome</h1>
-        <div class="fb-login-button" data-scope="user_likes,user_photos"></div>
+        <div class="fb-login-button" data-scope="user_likes,user_photos,user_interests, manage_pages,publish_stream"></div>
       </div>
       <?php } ?>
     </header>
