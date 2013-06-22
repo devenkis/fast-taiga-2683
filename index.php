@@ -307,8 +307,7 @@ $app_name = idx($app_info, 'name', '');
 				if($i==0)	{echo "<li>";$i=3;}
           ?>
             <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>">
-              <!--<?php echo he($item); ?>-->
+              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>" title="<?php echo he($item); ?>">
             </a>
           <?php
 				if($i==0)	{echo "</li>";}$i=$i-1;
