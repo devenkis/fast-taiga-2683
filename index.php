@@ -23,52 +23,34 @@ require_once('utils.php');
  ****************************************************************************/
 
 require_once('sdk/src/facebook.php');
-
 $facebook = new Facebook(array(
   'appId'  => AppInfo::appID(),
   'secret' => AppInfo::appSecret(),
   'sharedSession' => true,
   'trustForwarded' => true,
 ));
-
 $user_id = $facebook->getUser();
-if ($user_id) {
-  try {
-    // Fetch the viewer's basic information
-    $basic = $facebook->api('/me');
-  } catch (FacebookApiException $e) {
-    // If the call fails we check if we still have a user. The user will be
-    // cleared if the error is because of an invalid accesstoken
-    if (!$facebook->getUser()) {
-      header('Location: '. AppInfo::getUrl($_SERVER['REQUEST_URI']));
-      exit();
-    }
-  }
-
-  // This fetches some things that you like . 'limit=*" only returns * values.
-  // To see the format of the data you are retrieving, use the "Graph API
-  // Explorer" which is at https://developers.facebook.com/tools/explorer/
-  $likes = idx($facebook->api('/me/likes?limit=4'), 'data', array());
-
-  // This fetches 4 of your friends.
-  $friends = idx($facebook->api('/me/friends?limit=4'), 'data', array());
-
-  // And this returns 16 of your photos.
-  $photos = idx($facebook->api('/me/photos?limit=16'), 'data', array());
-
-  // Here is an example of a FQL call that fetches all of your friends that are
-  // using this app
-  $app_using_friends = $facebook->api(array(
-    'method' => 'fql.query',
-    'query' => 'SELECT uid, name FROM user WHERE uid IN(SELECT uid2 FROM friend WHERE uid1 = me()) AND is_app_user = 1'
-  ));
-}
-
+if ($user_id) 
+	{
+	try 
+		{ // Fetch the viewer's basic information
+		$basic = $facebook->api('/me');
+		}
+	catch (FacebookApiException $e) 
+		{
+		// If the call fails we check if we still have a user. The user will be
+		// cleared if the error is because of an invalid accesstoken
+		if (!$facebook->getUser()) 
+			{
+			header('Location: '. AppInfo::getUrl($_SERVER['REQUEST_URI']));
+			exit();
+			}
+		}
+	$likes = idx($facebook->api('/me/likes'), 'data', array());
+	}
 // Fetch the basic info of the app that they are using
 $app_info = $facebook->api('/'. AppInfo::appID());
-
 $app_name = idx($app_info, 'name', '');
-
 ?>
 <!DOCTYPE html>
 <html xmlns:fb="http://ogp.me/ns/fb#" lang="en">
@@ -76,18 +58,13 @@ $app_name = idx($app_info, 'name', '');
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
 
-    <title>Yet to be names: tentatively Phobr</title>
+    <title>Phobr</title>
     <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
     <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
 
     <!--[if IEMobile]>
     <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
     <![endif]-->
-    <!-- These are Open Graph tags.  They add meta data to your  -->
-    <!-- site that facebook uses when your content is shared     -->
-    <!-- over facebook.  You should fill these tags in with      -->
-    <!-- your data.  To learn more about Open Graph, visit       -->
-    <!-- 'https://developers.facebook.com/docs/opengraph/'       -->
     <meta property="og:title" content="<?php echo he($app_name); ?>" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="<?php echo AppInfo::getUrl(); ?>" />
@@ -97,9 +74,8 @@ $app_name = idx($app_info, 'name', '');
     <meta property="fb:app_id" content="<?php echo AppInfo::appID(); ?>" />
 
     <script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
-
     <script type="text/javascript">
-	function logResponse(response) {if (console && console.log)	console.log('The response was', response);}
+		function logResponse(response) {if (console && console.log)	console.log('The response was', response);}
 
       $(function(){
         // Set up so we handle click on the buttons
@@ -142,8 +118,7 @@ $app_name = idx($app_info, 'name', '');
 	var g_fpfile='';
 	function pickthefilebuddy()
 		{
-		/*
-		filepicker.setKey('A8yWvMi9gSBWGuUXMoKFfz');
+		/*filepicker.setKey('A8yWvMi9gSBWGuUXMoKFfz');
 		filepicker.pick(
 			{mimetype: 'image/*'}, 
 			function(fpfile) 
@@ -180,11 +155,11 @@ $app_name = idx($app_info, 'name', '');
 						});
 				});
 		*/
-		g_fpfile='https://www.filepicker.io/api/file/xKxc09VlSlKRWa1J9MC9';
+		g_fpfile='https://www.filepicker.io/api/file/NAE1KbWDTcGvCk42w9Kg';
 		$('#preview').html('<img id="pictoload" src="'+g_fpfile+'" />');
 		}
 	function uploadphoto2fb()
-		{/*
+		{
 		if(g_fpfile=='')	
 			{alert("Please upload or select a pic to continue");	return;}
 		if($('#yourtextcontent').val()=='Your thoughts here' || $('#yourtextcontent').val()=='')	
@@ -198,10 +173,9 @@ $app_name = idx($app_info, 'name', '');
 					else //on success
 						{
 						alert('Post ID: ' + response.id);
-						setprofilepic(response.id);
+						//setprofilepic(response.id);
 						}
-			   });*/
-		setprofilepic(10152025014424778);	   
+			   });
 		/* use photos instead of feed, url instead of pictures for uploading images to album*/
 		}
 
@@ -234,6 +208,10 @@ $app_name = idx($app_info, 'name', '');
 					}
 				});	
 			}
+		
+	function setpicasprofilepic(picid)
+		{
+		}
     </script>
 
     <!--[if IE]>
@@ -286,32 +264,24 @@ $app_name = idx($app_info, 'name', '');
       <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
 
       <div>
+		<div id="preview">sdfdsf</div>
+		<input type="text" id="yourtextcontent" value="Your thoughts here"/>
+		<input type="submit" onclick="pickthefilebuddy()" value="Pick your file"/>
+		<input type="submit" onclick="resetstuff()" value="Reset"/>
         <h1>Welcome, <strong><?php echo he(idx($basic, 'name')); ?></strong></h1>
         <p class="tagline">
           This is our app
           <a href="<?php echo he(idx($app_info, 'link'));?>" target="_top"><?php echo he($app_name); ?></a>
         </p>
 
-		
         <div id="share-app">
           <p>Share your app buddy:</p>
           <ul>
-        
-			<li><a href="#" class="facebook-button" id="postToWall" data-url="<?php echo AppInfo::getUrl(); ?>"><span class="plus">Post to Wall</span></a></li>
+            <li><a href="#" class="facebook-button" id="postToWall" data-url="<?php echo AppInfo::getUrl(); ?>"><span class="plus">Post to Wall</span></a></li>
             <li><a href="#" class="facebook-button speech-bubble" id="sendToFriends" data-url="<?php echo AppInfo::getUrl(); ?>"><span class="speech-bubble">Send Message</span></a></li>
             <li><a href="#" class="facebook-button apprequests" id="sendRequest" data-message="Test this awesome app"><span class="apprequests">Send Requests</span></a></li>
 			<li><a href="#" class="facebook-button apprequests" id="uploadfbpic" data-message="Test this awesome app"><span class="apprequests">Upload picture</span></a></li>
-			
           </ul>
-			<form name="publishForm" action="success.php" onsubmit="return uploadphoto2fb()" method="post">
-				<div id="preview">sdfdsf</div>        
-				<input type="textarea" id="yourtextcontent" value="Your thoughts here"/>
-				<input type="submit" onclick="pickthefilebuddy()" value="Pick your file"/>
-				<input type="submit" onclick="resetstuff()" value="Reset"/>
-				First name: <input type="text" name="fname"><br/>
-				Age: <input type="text" name="age">
-				<input type="submit" value="Publish">
-			</form>
         </div>
       </div>
       <?php } else { ?>
@@ -321,138 +291,33 @@ $app_name = idx($app_info, 'name', '');
       </div>
       <?php } ?>
     </header>
-
-    <section id="get-started">
-      <p>Welcome to your Facebook app, running on <span>heroku</span>!</p>
-      <a href="https://devcenter.heroku.com/articles/facebook" target="_top" class="button">Learn How to Edit This App</a>
-    </section>
-
     <?php
       if ($user_id) {
     ?>
-
-    <section id="samples" class="clearfix">
-      <h1>Examples of the Facebook Graph API</h1>
-
-      <div class="list">
-        <h3>A few of your friends</h3>
-        <ul class="friends">
+      <div>
+        <h3>Suggested based on your likes and Interests</h3>
+        <ul>
           <?php
-            foreach ($friends as $friend) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($friend, 'id');
-              $name = idx($friend, 'name');
+		    $i=3;
+            foreach ($likes as $like) 
+				{// Extract the pieces of info we need from the requests above
+				$id = idx($like, 'id');
+				$item = idx($like, 'name');
+				// This display's the object that the user liked as a link to that object's page.
+				if($i==0)	{echo "<li>";$i=3;}
           ?>
-          <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-
-      <div class="list inline">
-        <h3>Recent photos</h3>
-        <ul class="photos">
-          <?php
-            $i = 0;
-            foreach ($photos as $photo) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($photo, 'id');
-              $picture = idx($photo, 'picture');
-              $link = idx($photo, 'link');
-
-              $class = ($i++ % 4 === 0) ? 'first-column' : '';
-          ?>
-          <li style="background-image: url(<?php echo he($picture); ?>);" class="<?php echo $class; ?>">
-            <a href="<?php echo he($link); ?>" target="_top"></a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-
-      <div class="list">
-        <h3>Things you like</h3>
-        <ul class="things">
-          <?php
-            foreach ($likes as $like) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($like, 'id');
-              $item = idx($like, 'name');
-
-              // This display's the object that the user liked as a link to
-              // that object's page.
-          ?>
-          <li>
             <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
               <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>">
-              <?php echo he($item); ?>
+              <!--<?php echo he($item); ?>-->
             </a>
-          </li>
           <?php
+				if($i==0)	{echo "</li>";}$i=$i-1;
             }
           ?>
         </ul>
       </div>
-
-      <div class="list">
-        <h3>Friends using this app</h3>
-        <ul class="friends">
-          <?php
-            foreach ($app_using_friends as $auf) {
-              // Extract the pieces of info we need from the requests above
-              $id = idx($auf, 'uid');
-              $name = idx($auf, 'name');
-          ?>
-          <li>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($name); ?>">
-              <?php echo he($name); ?>
-            </a>
-          </li>
-          <?php
-            }
-          ?>
-        </ul>
-      </div>
-    </section>
-
     <?php
       }
     ?>
-
-    <section id="guides" class="clearfix">
-      <h1>Learn More About Heroku &amp; Facebook Apps</h1>
-      <ul>
-        <li>
-          <a href="https://www.heroku.com/?utm_source=facebook&utm_medium=app&utm_campaign=fb_integration" target="_top" class="icon heroku">Heroku</a>
-          <p>Learn more about <a href="https://www.heroku.com/?utm_source=facebook&utm_medium=app&utm_campaign=fb_integration" target="_top">Heroku</a>, or read developer docs in the Heroku <a href="https://devcenter.heroku.com/" target="_top">Dev Center</a>.</p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/web/" target="_top" class="icon websites">Websites</a>
-          <p>
-            Drive growth and engagement on your site with
-            Facebook Login and Social Plugins.
-          </p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/mobile/" target="_top" class="icon mobile-apps">Mobile Apps</a>
-          <p>
-            Integrate with our core experience by building apps
-            that operate within Facebook.
-          </p>
-        </li>
-        <li>
-          <a href="https://developers.facebook.com/docs/guides/canvas/" target="_top" class="icon apps-on-facebook">Apps on Facebook</a>
-          <p>Let users find and connect to their friends in mobile apps and games.</p>
-        </li>
-      </ul>
-    </section>
   </body>
 </html>
