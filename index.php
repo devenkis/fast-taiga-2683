@@ -92,7 +92,6 @@ $app_name = idx($app_info, 'name', '');
     <!--[if IEMobile]>
     <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
     <![endif]-->
-
     <!-- These are Open Graph tags.  They add meta data to your  -->
     <!-- site that facebook uses when your content is shared     -->
     <!-- over facebook.  You should fill these tags in with      -->
