@@ -1,27 +1,13 @@
 <?php
-// Provides access to app specific values such as your app id and app secret.
-// Defined in 'AppInfo.php'
+// Provides access to app specific values such as your app id and app secret.Defined in 'AppInfo.php'
 require_once('AppInfo.php');
-
 // Enforce https on production
-if (substr(AppInfo::getUrl(), 0, 8) != 'https://' && $_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
-  header('Location: https://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-  exit();
-}
-
-// This provides access to helper functions defined in 'utils.php'
+if (substr(AppInfo::getUrl(), 0, 8) != 'https://' && $_SERVER['REMOTE_ADDR'] != '127.0.0.1') 
+	{
+	header('Location: https://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+	exit();
+	}
 require_once('utils.php');
-
-
-/*****************************************************************************
- *
- * The content below provides examples of how to fetch Facebook data using the
- * Graph API and FQL.  It uses the helper functions defined in 'utils.php' to
- * do so.  You should change this section so that it prepares all of the
- * information that you want to display to the user.
- *
- ****************************************************************************/
-
 require_once('sdk/src/facebook.php');
 $facebook = new Facebook(array(
   'appId'  => AppInfo::appID(),
@@ -59,9 +45,10 @@ $app_name = idx($app_info, 'name', '');
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
 
     <title>Phobr</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
     <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
-
+	
     <!--[if IEMobile]>
     <link rel="stylesheet" href="mobile.css" media="screen" type="text/css"  />
     <![endif]-->
@@ -73,7 +60,9 @@ $app_name = idx($app_info, 'name', '');
     <meta property="og:description" content="My first app" />
     <meta property="fb:app_id" content="<?php echo AppInfo::appID(); ?>" />
 
-    <script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="javascript/bootstrap.min.js"></script>
+	
     <script type="text/javascript">
 		function logResponse(response) {if (console && console.log)	console.log('The response was', response);}
 
@@ -223,100 +212,126 @@ $app_name = idx($app_info, 'name', '');
     <![endif]-->
   </head>
   <body>
-    <div id="fb-root"></div>
-    <script type="text/javascript">
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '<?php echo AppInfo::appID(); ?>', // App ID
-          channelUrl : '//<?php echo $_SERVER["HTTP_HOST"]; ?>/channel.html', // Channel File
-          status     : true, // check login status
-          cookie     : true, // enable cookies to allow the server to access the session
-          xfbml      : true // parse XFBML
-        });
+	<div class="navbar navbar-inverse navbar-fixed-top">
+	  <div class="navbar-inner">
+		<div class="container">
+		  <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <a class="brand" href="#">PHOBR</a>
+		  <div class="nav-collapse collapse">
+			<ul class="nav">
+			  <li class="active"><a href="#">Home</a></li>
+			  <li><a href="#about">MyCampaigns</a></li>
+			  <li><a href="createContent.html">MyCredits</a></li>
+			  <li><a href="#contact">Contact us</a></li>
+			</ul>
+		  </div><!--/.nav-collapse -->
+		</div>
+	  </div>
+	</div>
+	<br/><br/><br/><br/>
+	<div class="container" style="align:center">
+		<div id="fb-root"></div>
+		<script type="text/javascript">
+		  window.fbAsyncInit = function() {
+			FB.init({
+			  appId      : '<?php echo AppInfo::appID(); ?>', // App ID
+			  channelUrl : '//<?php echo $_SERVER["HTTP_HOST"]; ?>/channel.html', // Channel File
+			  status     : true, // check login status
+			  cookie     : true, // enable cookies to allow the server to access the session
+			  xfbml      : true // parse XFBML
+			});
 
-        // Listen to the auth.login which will be called when the user logs in
-        // using the Login button
-        FB.Event.subscribe('auth.login', function(response) {
-          // We want to reload the page now so PHP can read the cookie that the
-          // Javascript SDK sat. But we don't want to use
-          // window.location.reload() because if this is in a canvas there was a
-          // post made to this page and a reload will trigger a message to the
-          // user asking if they want to send data again.
-          window.location = window.location;
-        });
+			// Listen to the auth.login which will be called when the user logs in
+			// using the Login button
+			FB.Event.subscribe('auth.login', function(response) {
+			  // We want to reload the page now so PHP can read the cookie that the
+			  // Javascript SDK sat. But we don't want to use
+			  // window.location.reload() because if this is in a canvas there was a
+			  // post made to this page and a reload will trigger a message to the
+			  // user asking if they want to send data again.
+			  window.location = window.location;
+			});
 
-        FB.Canvas.setAutoGrow();
-      };
+			FB.Canvas.setAutoGrow();
+		  };
 
-      // Load the SDK Asynchronously
-      (function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js";
-        fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-     // Load file picker io Asynchronously
-	(function(a){if(window.filepicker){return}var b=a.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===a.location.protocol?"https:":"http:")+"//api.filepicker.io/v1/filepicker.js";var c=a.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c);var d={};d._queue=[];var e="pick,pickMultiple,pickAndStore,read,write,writeUrl,export,convert,store,storeUrl,remove,stat,setKey,constructWidget,makeDropPane".split(",");var f=function(a,b){return function(){b.push([a,arguments])}};for(var g=0;g<e.length;g++){d[e[g]]=f(e[g],d._queue)}window.filepicker=d})(document); 
-	</script>
-    <header class="clearfix">
-      <?php if (isset($basic)) { ?>
-      <p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
-
-      <div>
-		<div id="preview">sdfdsf</div>
-		<input type="text" id="yourtextcontent" value="Your thoughts here"/>
-		<input type="submit" onclick="pickthefilebuddy()" value="Pick your file"/>
-		<input type="submit" onclick="resetstuff()" value="Reset"/>
-        <h1>Welcome, <strong><?php echo he(idx($basic, 'name')); ?></strong></h1>
-        <p class="tagline">
-          This is our app
-          <a href="<?php echo he(idx($app_info, 'link'));?>" target="_top"><?php echo he($app_name); ?></a>
-        </p>
-
-        <div id="share-app">
-          <p>Share your app buddy:</p>
-          <ul>
-            <li><a href="#" class="facebook-button" id="postToWall" data-url="<?php echo AppInfo::getUrl(); ?>"><span class="plus">Post to Wall</span></a></li>
-            <li><a href="#" class="facebook-button speech-bubble" id="sendToFriends" data-url="<?php echo AppInfo::getUrl(); ?>"><span class="speech-bubble">Send Message</span></a></li>
-            <li><a href="#" class="facebook-button apprequests" id="sendRequest" data-message="Test this awesome app"><span class="apprequests">Send Requests</span></a></li>
-			<li><a href="#" class="facebook-button apprequests" id="uploadfbpic" data-message="Test this awesome app"><span class="apprequests">Upload picture</span></a></li>
-          </ul>
-        </div>
-      </div>
-      <?php } else { ?>
-      <div>
-        <h1>Welcome</h1>
-        <div class="fb-login-button" data-scope="user_likes,user_photos,user_interests, manage_pages,publish_stream"></div>
-      </div>
-      <?php } ?>
-    </header>
-    <?php
-      if ($user_id) {
-    ?>
-      <div>
-        <h3>Suggested based on your likes and Interests</h3>
-        <ul>
-          <?php
-		    $i=3;
-            foreach ($likes as $like) 
-				{// Extract the pieces of info we need from the requests above
-				$id = idx($like, 'id');
-				$item = idx($like, 'name');
-				// This display's the object that the user liked as a link to that object's page.
-				if($i==0)	{echo "<li>";$i=3;}
-          ?>
-            <a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-              <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>" title="<?php echo he($item); ?>">
-            </a>
-          <?php
-				if($i==0)	{echo "</li>";}$i=$i-1;
-            }
-          ?>
-        </ul>
-      </div>
-    <?php
-      }
-    ?>
+		  // Load the SDK Asynchronously
+		  (function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) return;
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/en_US/all.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		  }(document, 'script', 'facebook-jssdk'));
+		 // Load file picker io Asynchronously
+		(function(a){if(window.filepicker){return}var b=a.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===a.location.protocol?"https:":"http:")+"//api.filepicker.io/v1/filepicker.js";var c=a.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c);var d={};d._queue=[];var e="pick,pickMultiple,pickAndStore,read,write,writeUrl,export,convert,store,storeUrl,remove,stat,setKey,constructWidget,makeDropPane".split(",");var f=function(a,b){return function(){b.push([a,arguments])}};for(var g=0;g<e.length;g++){d[e[g]]=f(e[g],d._queue)}window.filepicker=d})(document); 
+		</script>
+		<header>		
+		<div class="row">
+<?php if (isset($basic)) { ?>
+			<div class="span5">
+				<p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
+				<h1>Welcome, <strong><?php echo he(idx($basic, 'name')); ?></strong></h1><br>
+				<textarea type="textarea" class="input-xlarge" id="yourtextcontent" value="Your thoughts here"></textarea>
+				<button type="button" class="btn btn-info" onclick="pickthefilebuddy()">Pick your file</button>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<button type="button" class="btn btn-info" onclick="resetstuff()">Reset</button>
+				<br><br>
+				
+				<div>				
+					<div><h4>Drag brands from here to your Pic beside</h4>         
+					<ul>
+		<?php
+					foreach ($likes as $like) 
+						{// Extract the pieces of info we need from the requests above
+						$id = idx($like, 'id');
+						$item = idx($like, 'name');
+						// This display's the object that the user liked as a link to that object's page.
+						echo "<li>";
+		?>
+					<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+					  <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>" title="<?php echo he($item); ?>">
+					</a>
+		<?php	echo "</li>";} ?>
+					</div><!-- .hero-unit --> 
+				</div><!-- .container -->
+				<br>
+				<div id="share-app"><button type="button" class="btn btn-large btn-primary"href="#" class="facebook-button apprequests" id="uploadfbpic" data-message="Test this awesome app"><span class="apprequests">Publish</span></button></div>
+			</div>
+			<div class="span4">
+				<br><br><br><br><br>&nbsp;&nbsp;&nbsp;Preview&nbsp;<br>
+				<div id="preview"><img src="images/default.jpg"/></div>
+			</div>
+			<div class="span3">
+				<h3>Suggested based on your likes and Interests</h3>
+				<ul>
+			<?php
+					$i=4;
+					foreach ($likes as $like) 
+						{// Extract the pieces of info we need from the requests above
+						$id = idx($like, 'id');
+						$item = idx($like, 'name');
+						// This display's the object that the user liked as a link to that object's page.
+						if($i==0)	{echo "<li>";$i=4;}
+			?>
+					<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
+					  <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>" title="<?php echo he($item); ?>">
+					</a>
+			<?php	if($i==0)	{echo "</li>";}$i=$i-1;	} ?>
+				</ul>
+			</div>	
+		</div>
+<?php } else { ?>
+		<div>
+			<h1>Welcome</h1>
+			<div class="fb-login-button" data-scope="user_likes,user_photos,user_interests, manage_pages,publish_stream"></div>
+		</div>
+<?php } ?>
+		</header>
+	</div>
   </body>
 </html>

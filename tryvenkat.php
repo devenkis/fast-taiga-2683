@@ -6,9 +6,7 @@
 		<title>Yet to be names: tentatively Phobr</title>
 		<link rel="stylesheet" href="stylesheets/screen.css" media="Screen" type="text/css" />
 		<link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-width: 480px), only screen and (max-device-width: 480px)" type="text/css" />
-		<script type="text/javascript" src="javascript/jquery-1.7.1.min.js"></script>
-		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script type="text/javascript" src="/javascript/jquery-1.7.1.min.js"></script>
 
 		<script>// Load file picker io Asynchronously
 	(function(a){if(window.filepicker){return}var b=a.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===a.location.protocol?"https:":"http:")+"//api.filepicker.io/v1/filepicker.js";var c=a.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c);var d={};d._queue=[];var e="pick,pickMultiple,pickAndStore,read,write,writeUrl,export,convert,store,storeUrl,remove,stat,setKey,constructWidget,makeDropPane".split(",");var f=function(a,b){return function(){b.push([a,arguments])}};for(var g=0;g<e.length;g++){d[e[g]]=f(e[g],d._queue)}window.filepicker=d})(document); 
@@ -96,30 +94,11 @@
 					
 					});
 			}
-
-			function callSave()
-			{
-				var dropImg = $("#droppable").css('background-image');
-				var dragImg = $("#draggable").css('background-image');
-				var leftOffset = $("#draggable").offset().left - $("#droppable").offset().left;
-				var topOffset = $("#draggable").offset().top - $("#droppable").offset().top;
-				alert("dropImg-"+dropImg+"--dragImg--"+dragImg+"--leftOffset--"+leftOffset+"--topOffset--"+topOffset);
-				$.ajax({
-				type: "POST",
-				url: "saveData.php",
-				data: { dropLink: dropImg, dragLink: dragImg, leftOffset: leftOffset, topOffset: topOffset }
-				}).done(function( msg ) {
-				alert( "Data Saved: " + msg );
-				});
-			}
-
 		</script>
 		
 	</head>
 	<body>
-	<table width="100%">
-		<tr>
-		<td width="65%">
+		<input type="submit" value="fuck it" onclick="trialrun()"/>
 		<form name="publishForm" action="successpublish.php" method="post">
 			<div id="preview">sdfdsf</div>        
 			<input type="textarea" id="yourtextcontent" name="yourtextcontent" value="Your thoughts here"/>
@@ -135,33 +114,6 @@
 			<input type='hidden' id="swall" name="swall" value="0"/>
 			<input type='hidden' id="mpage" name="mpage" value="0"/>
 			<input type='hidden' id="fpfile" name="fpfile"/>
-			<input type='hidden' id="dragableId" name=""/>
-			<input type='hidden' id="droppableId" name=""/>
-			<div id="droppable" style="position: relative; background: url(https://www.filepicker.io/api/file/xKxc09VlSlKRWa1J9MC9);  width: 600px; height: 450px;"></div>
-			 <div id="result">Click an element.</div>
 		</form>
-		</td>
-		<td width="35%">
-			<div id="result">Click an element.</div>
-			<div id="draggable1" class="draggable" style="position: relative; background: url(brands/pic1.jpg); width: 80px; height: 80px;">Drag me</div>
-			<div id="draggable2" class="draggable" style="position: relative; background: url(brands/pic2.jpg); width: 80px; height: 80px;">Drag me</div>
-			<div id="draggable3" class="draggable" style="position: relative; background: url(brands/pic3.jpg); width: 80px; height: 80px;">Drag me</div>
-		</td>
 	</body>
-	<script>
-$(document).ready(function(){
-  $(".draggable").draggable({
-	 drag: function(){
-		document.getElementById('dragableId').value = $(this).attr('id');
-	 }
-  });
-  $( "#droppable" ).droppable({
-	drop: function() {
-	var bigoffset = $(".draggable").offset();
-	var offset = $(this).offset();
-	 $("#result").text(this.tagName + " coords ( " + (bigoffset.left - offset.left) + ", " + (bigoffset.top - offset.top) + " )");	 
-}
-});
-});
-</script>
 </html>
