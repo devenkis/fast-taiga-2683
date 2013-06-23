@@ -8,3 +8,34 @@ header #picture {
     overflow: hidden;
     width: 64px;
 }
+.dark-class {
+    background-color: #797C7D;
+    background-position: center center;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+    z-index: 20;
+	}
+
+.span5a
+	{
+	background-color: #EEEEEE;
+    border-radius: 15px 15px 15px 15px;
+    margin: 5px;
+    padding: 15px;
+	}
+.span5b
+	{
+	background-color: #EEE;
+	margin: 10px;
+	border-radius:15px;
+	}
+.span5c
+	{
+	background-color: #EEE;
+	margin: 10px;
+	border-radius:15px;
+	}
+.spanabc
+	{
+	
+	}

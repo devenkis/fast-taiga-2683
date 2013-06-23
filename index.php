@@ -61,6 +61,7 @@ $app_name = idx($app_info, 'name', '');
     <meta property="fb:app_id" content="<?php echo AppInfo::appID(); ?>" />
 
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="javascript/bootstrap.min.js"></script>
 	
     <script type="text/javascript">
@@ -101,13 +102,13 @@ $app_name = idx($app_info, 'name', '');
 		{
 		g_fpfile='';
 		$('#yourtextcontent').val('Your thoughts here');
-		$('#preview').html('');
+		$('#droppable').html('');
 		}  
 
 	var g_fpfile='';
 	function pickthefilebuddy()
 		{
-		/*filepicker.setKey('A8yWvMi9gSBWGuUXMoKFfz');
+		filepicker.setKey('A8yWvMi9gSBWGuUXMoKFfz');
 		filepicker.pick(
 			{mimetype: 'image/*'}, 
 			function(fpfile) 
@@ -122,7 +123,7 @@ $app_name = idx($app_info, 'name', '');
 								fpfile, {width: 700},
 								function(new_FPFile)
 									{//alert("Converting...image to upload");console.log(new_FPFile.url);
-									$('#preview').html('<img id="pictoload" src="'+new_FPFile.url+'" />');
+									$('#droppable').html('<img id="pictoload" src="'+new_FPFile.url+'" />');
 									g_fpfile=new_FPFile.url;
 									});
 							}
@@ -132,20 +133,19 @@ $app_name = idx($app_info, 'name', '');
 								fpfile, {height: 700},
 								function(new_FPFile)
 									{//alert("Converting...image to upload");console.log(new_FPFile.url);
-									$('#preview').html('<img id="pictoload" src="'+new_FPFile.url+'" />');
+									$('#droppable').html('<img id="pictoload" src="'+new_FPFile.url+'" />');
 									g_fpfile=new_FPFile.url;
 									});
 							}
 						else
 							{
-							$('#preview').html('<img id="pictoload" src="'+fpfile.url+'" />');
+							$('#droppable').html('<img id="pictoload" src="'+fpfile.url+'" />');
 							g_fpfile=fpfile.url;
 							}
 						});
 				});
-		*/
-		g_fpfile='https://www.filepicker.io/api/file/NAE1KbWDTcGvCk42w9Kg';
-		$('#preview').html('<img id="pictoload" src="'+g_fpfile+'" />');
+		/*g_fpfile='https://www.filepicker.io/api/file/NAE1KbWDTcGvCk42w9Kg';
+		$('#droppable').html('<img id="pictoload" src="'+g_fpfile+'" />');*/
 		}
 	function uploadphoto2fb()
 		{
@@ -161,8 +161,8 @@ $app_name = idx($app_info, 'name', '');
 					if (!response || response.error) {alert('Error occured'+JSON.stringify(response.error));} 
 					else //on success
 						{
-						alert('Post ID: ' + response.id);
-						//setprofilepic(response.id);
+						alert('Successfully posted to Facebook!! Keep an eye on your credits ');
+						resetstuff();
 						}
 			   });
 		/* use photos instead of feed, url instead of pictures for uploading images to album*/
@@ -198,9 +198,6 @@ $app_name = idx($app_info, 'name', '');
 				});	
 			}
 		
-	function setpicasprofilepic(picid)
-		{
-		}
     </script>
 
     <!--[if IE]>
@@ -274,40 +271,64 @@ $app_name = idx($app_info, 'name', '');
 		<div class="row">
 <?php if (isset($basic)) { ?>
 			<div class="span5">
-				<p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
-				<h1>Welcome, <strong><?php echo he(idx($basic, 'name')); ?></strong></h1><br>
-				<textarea type="textarea" class="input-xlarge" id="yourtextcontent" value="Your thoughts here"></textarea>
-				<button type="button" class="btn btn-info" onclick="pickthefilebuddy()">Pick your file</button>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<button type="button" class="btn btn-info" onclick="resetstuff()">Reset</button>
+				<div class="span5a">
+					<p id="picture" style="background-image: url(https://graph.facebook.com/<?php echo he($user_id); ?>/picture?type=normal)"></p>
+					<h1>Welcome, <strong><?php echo he(idx($basic, 'name')); ?></strong></h1><br>
+					<textarea type="textarea" class="input-xlarge" id="yourtextcontent" value="Your thoughts here"></textarea>
+					<br>
+					<div class="dark-class">
+						<input type="checkbox" id="cprofpic"/> Profile pic &nbsp;&nbsp;&nbsp; 
+						<input type="checkbox" id="cbannerpic"/> BannerImage &nbsp;&nbsp;&nbsp; 
+						<input type="checkbox" id="cmanagepage"/> mypage &nbsp;&nbsp;&nbsp; 
+					</div><br>
+					<button type="button" class="btn btn-info" onclick="pickthefilebuddy()">Pick your file</button>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<button type="button" class="btn btn-info" onclick="resetstuff()">Reset</button>
+					<br>
+				</div>
 				<br><br>
-				
-				<div>				
-					<div><h4>Drag brands from here to your Pic beside</h4>         
-					<ul>
-		<?php
+				<div class="span5a">				
+					<h4>Drag brands from here to your Pic beside</h4><br/>
+					<table cellpadding="10">
+						<tr>
+		<?php		$i=5;
 					foreach ($likes as $like) 
 						{// Extract the pieces of info we need from the requests above
 						$id = idx($like, 'id');
 						$item = idx($like, 'name');
 						// This display's the object that the user liked as a link to that object's page.
-						echo "<li>";
-		?>
-					<a href="https://www.facebook.com/<?php echo he($id); ?>" target="_top">
-					  <img src="https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square" alt="<?php echo he($item); ?>" title="<?php echo he($item); ?>">
-					</a>
-		<?php	echo "</li>";} ?>
-					</div><!-- .hero-unit --> 
-				</div><!-- .container -->
+		?>					<td>
+					  <div id='<?php echo "draggable".$i ?>' class="draggable" style="position: relative; background: url(https://graph.facebook.com/<?php echo he($id) ?>/picture?type=square); width: 50px; height: 50px;"></div>
+		<?php 			$i--;if($i==0)	break;} ?>
+							</td>
+						</tr>
+					</table>
+				</div>
 				<br>
+				<div class="span5a">
+					<div class="dark-class ">
+					Add a campaign:<br>
+						<table cellpadding="10">
+							<tr>
+								<td><img src="images/ac1.png" style="width: 80px; height: 80px;"/></td><td><br>&nbsp;&nbsp;<br></td>
+								<td><img src="images/ac2.png" style="width: 80px; height: 80px;"/> </td><td><br>&nbsp;&nbsp;<br></td> 
+								<td><img src="images/ac3.png" style="width: 80px; height: 80px;"></td><td><br>&nbsp;&nbsp;<br></td> 
+								<td><img src="images/ac4.png" style="width: 80px; height: 80px;"/></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<br><br><br>
 				<div id="share-app"><button type="button" class="btn btn-large btn-primary"href="#" class="facebook-button apprequests" id="uploadfbpic" data-message="Test this awesome app"><span class="apprequests">Publish</span></button></div>
 			</div>
 			<div class="span4">
+				<input type='hidden' id="dragableId" name=""/>
+				<input type='hidden' id="droppableId" name=""/>
 				<br><br><br><br><br>&nbsp;&nbsp;&nbsp;Preview&nbsp;<br>
-				<div id="preview"><img src="images/default.jpg"/></div>
+				<div id="droppable"><img src="images/default.jpg"/></div>
 			</div>
-			<div class="span3">
-				<h3>Suggested based on your likes and Interests</h3>
+			<div class="span3 spanabc">
+				<h3>You likes & Interests<br><p>(Brands suggested on these)</p><br></h3>
 				<ul>
 			<?php
 					$i=4;
@@ -333,5 +354,22 @@ $app_name = idx($app_info, 'name', '');
 <?php } ?>
 		</header>
 	</div>
+	<script>
+$(document).ready(function(){
+  $(".draggable").draggable({
+	 drag: function(){
+		document.getElementById('dragableId').value = $(this).attr('id');
+	 }
+  });
+  $( "#droppable" ).droppable({
+	drop: function() {
+	var bigoffset = $(".draggable").offset();
+	var offset = $(this).offset();
+	 $("#result").text(this.tagName + " coords ( " + (bigoffset.left - offset.left) + ", " + (bigoffset.top - offset.top) + " )");	 
+}
+});
+});
+</script>	
   </body>
 </html>
+

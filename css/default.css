@@ -1,0 +1,38 @@
+body{
+	background-color:#000;
+}
+h1{
+	color:#FFFFFF;
+	font-family:Arial;
+	font-size:24px;
+	font-weight:bold;
+}
+#item{
+	width:400px;
+	margin:0px auto;
+	height:380px;
+	margin-top:50px}
+#item2{
+	width:400px;
+	margin:0px auto;
+	height:380px;
+	margin-top:50px}
+#image1{
+	position:absolute;
+	cursor:pointer;
+}
+#image2{
+	display:none;
+	position:absolute;
+	cursor:pointer;
+}
+#image3{
+	position:absolute;
+	cursor:pointer;
+}
+#image4{
+	display:none;
+	position:absolute;
+	cursor:pointer;
+}
+
