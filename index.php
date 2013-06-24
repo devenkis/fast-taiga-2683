@@ -222,7 +222,7 @@ $app_name = idx($app_info, 'name', '');
 			<ul class="nav">
 			  <li class="active"><a href="#">Home</a></li>
 			  <li><a href="#about">MyCampaigns</a></li>
-			  <li><a href="createContent.html">MyCredits</a></li>
+			  <li><a href="#credits">MyCredits</a></li>
 			  <li><a href="#contact">Contact us</a></li>
 			</ul>
 		  </div><!--/.nav-collapse -->
